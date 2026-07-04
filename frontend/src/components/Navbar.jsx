@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import ConfirmLogoutModal from "../components/ConfirmLogoutModal";
 
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -45,6 +46,7 @@ function ThemeToggle() {
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   const linkClass = ({ isActive }) =>
     `px-3 py-2 rounded-lg text-sm font-medium transition ${
@@ -54,97 +56,108 @@ export default function Navbar() {
     }`;
 
   return (
-    <header className="sticky top-0 z-30 bg-paper/90 dark:bg-dark-bg/90 backdrop-blur border-b border-line dark:border-dark-line">
-      <div className="container-app py-3 sm:py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <NavLink to="/dashboard" className="flex items-center gap-2 shrink-0">
-            <span className="h-8 w-8 rounded-lg bg-ink dark:bg-focus-500 flex items-center justify-center">
-              <span className="h-2 w-2 rounded-full bg-focus-300" />
-            </span>
-            <span className="font-display text-lg font-semibold tracking-tight hidden xs:inline">
-              Waypoint
-            </span>
-          </NavLink>
+    <>
+      <header className="sticky top-0 z-30 bg-paper/90 dark:bg-dark-bg/90 backdrop-blur border-b border-line dark:border-dark-line">
+        <div className="container-app py-3 sm:py-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-6">
+            <NavLink to="/dashboard" className="flex items-center gap-2 shrink-0">
+              <span className="h-8 w-8 rounded-lg bg-ink dark:bg-focus-500 flex items-center justify-center">
+                <span className="h-2 w-2 rounded-full bg-focus-300" />
+              </span>
+              <span className="font-display text-lg font-semibold tracking-tight hidden xs:inline">
+                Waypoint
+              </span>
+            </NavLink>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.to} to={link.to} className={linkClass}>
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
-        </div>
-
-        <div className="hidden md:flex items-center gap-3">
-          <ThemeToggle />
-          <div className="text-right">
-            <p className="text-sm font-medium leading-tight">{user?.name}</p>
-            <p className="text-xs text-muted dark:text-dark-muted leading-tight">{user?.email}</p>
+            <nav className="hidden md:flex items-center gap-1">
+              {NAV_LINKS.map((link) => (
+                <NavLink key={link.to} to={link.to} className={linkClass}>
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
           </div>
-          <button
-            onClick={logout}
-            className="text-sm font-medium text-muted dark:text-dark-muted hover:text-ember transition px-3 py-1.5 rounded-lg hover:bg-ember/10"
-          >
-            Sign out
-          </button>
+
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
+            <div className="text-right">
+              <p className="text-sm font-medium leading-tight">{user?.name}</p>
+              <p className="text-xs text-muted dark:text-dark-muted leading-tight">{user?.email}</p>
+            </div>
+            <button
+              onClick={() => setShowLogout(true)}
+              className="text-sm font-medium text-muted dark:text-dark-muted hover:text-ember transition px-3 py-1.5 rounded-lg hover:bg-ember/10"
+            >
+              Sign out
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 md:hidden">
+            <ThemeToggle />
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-label="Toggle menu"
+              aria-expanded={open}
+              className="h-9 w-9 rounded-lg flex items-center justify-center text-ink dark:text-white hover:bg-paper dark:hover:bg-dark-line transition"
+            >
+              {open ? (
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                  <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1 md:hidden">
-          <ThemeToggle />
-          <button
-            onClick={() => setOpen((o) => !o)}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            className="h-9 w-9 rounded-lg flex items-center justify-center text-ink dark:text-white hover:bg-paper dark:hover:bg-dark-line transition"
-          >
-            {open ? (
-              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
+        {open && (
+          <div className="md:hidden border-t border-line dark:border-dark-line bg-paper dark:bg-dark-bg">
+            <div className="container-app py-3 flex flex-col gap-1">
+              {NAV_LINKS.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+                      isActive
+                        ? 'bg-ink text-white dark:bg-focus-500'
+                        : 'text-muted dark:text-dark-muted hover:bg-line/50 dark:hover:bg-dark-line'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
 
-      {open && (
-        <div className="md:hidden border-t border-line dark:border-dark-line bg-paper dark:bg-dark-bg">
-          <div className="container-app py-3 flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                    isActive
-                      ? 'bg-ink text-white dark:bg-focus-500'
-                      : 'text-muted dark:text-dark-muted hover:bg-line/50 dark:hover:bg-dark-line'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
-
-            <div className="flex items-center justify-between px-3 py-3 mt-1 border-t border-line dark:border-dark-line">
-              <div>
-                <p className="text-sm font-medium leading-tight">{user?.name}</p>
-                <p className="text-xs text-muted dark:text-dark-muted leading-tight">{user?.email}</p>
+              <div className="flex items-center justify-between px-3 py-3 mt-1 border-t border-line dark:border-dark-line">
+                <div>
+                  <p className="text-sm font-medium leading-tight">{user?.name}</p>
+                  <p className="text-xs text-muted dark:text-dark-muted leading-tight">{user?.email}</p>
+                </div>
+                <button
+                  onClick={() => setShowLogout(true)}
+                  className="text-sm font-medium text-ember px-3 py-1.5 rounded-lg hover:bg-ember/10 transition"
+                >
+                  Sign out
+                </button>
               </div>
-              <button
-                onClick={logout}
-                className="text-sm font-medium text-ember px-3 py-1.5 rounded-lg hover:bg-ember/10 transition"
-              >
-                Sign out
-              </button>
             </div>
           </div>
-        </div>
-      )}
-    </header>
+        )}
+      </header>
+
+      <ConfirmLogoutModal
+        open={showLogout}
+        onCancel={() => setShowLogout(false)}
+        onConfirm={() => {
+          setShowLogout(false);
+          logout();
+        }}
+      />
+    </>
   );
 }
