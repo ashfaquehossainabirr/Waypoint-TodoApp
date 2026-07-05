@@ -142,7 +142,7 @@ export default function TaskForm({ initial, categories = [], onSubmit, onCancel,
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 rounded-lg bg-ink dark:bg-focus-500 text-white text-sm font-medium hover:bg-focus-700 transition disabled:opacity-60"
+          className="px-4 py-2 rounded-lg bg-ink dark:bg-focus-500 dark:hover:bg-focus-600 text-white text-sm font-medium hover:bg-focus-700 transition disabled:opacity-60"
         >
           {saving ? 'Saving…' : submitLabel}
         </button>
