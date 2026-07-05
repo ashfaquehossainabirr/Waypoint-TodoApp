@@ -114,7 +114,7 @@ export default function Navbar() {
         </div>
 
         {open && (
-          <div className="md:hidden border-t border-line dark:border-dark-line bg-paper dark:bg-dark-bg">
+          <div className="md:hidden fixed top-[64px] left-0 right-0 z-40 border-t border-line dark:border-dark-line bg-paper dark:bg-dark-bg shadow-lg">
             <div className="container-app py-3 flex flex-col gap-1">
               {NAV_LINKS.map((link) => (
                 <NavLink
