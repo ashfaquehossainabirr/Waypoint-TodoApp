@@ -17,8 +17,15 @@ function formatDateFull(dateStr) {
   });
 }
 
-export default function TaskModal({ task, categories = [], onClose, onUpdate, onDelete, onToggle }) {
-  const [mode, setMode] = useState('view'); // 'view' | 'edit'
+export default function TaskModal({
+  task,
+  categories = [],
+  onClose,
+  onUpdate,
+  onDelete,
+  onToggle,
+}) {
+  const [mode, setMode] = useState('view');
 
   useEffect(() => {
     setMode('view');
@@ -39,28 +46,45 @@ export default function TaskModal({ task, categories = [], onClose, onUpdate, on
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/40 backdrop-blur-sm p-0 sm:p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm px-3 sm:px-4"
       onClick={onClose}
     >
+      {/* ===== MODAL ===== */}
       <div
-        className="w-full sm:max-w-lg bg-surface dark:bg-dark-surface rounded-t-2xl sm:rounded-xl2 shadow-modal max-h-[90vh] overflow-y-auto scrollbar-thin"
+        className="
+          w-full max-w-lg
+          bg-surface dark:bg-dark-surface
+          rounded-xl
+          shadow-modal
+          max-h-[90vh]
+          overflow-y-auto
+          scrollbar-thin
+        "
         onClick={(e) => e.stopPropagation()}
       >
+        {/* ===== HEADER ===== */}
         <div className="sticky top-0 bg-surface dark:bg-dark-surface border-b border-line dark:border-dark-line px-5 sm:px-6 py-4 flex items-center justify-between">
           <span className="text-xs font-mono uppercase tracking-wide text-muted dark:text-dark-muted">
             {mode === 'edit' ? 'Edit task' : 'Task details'}
           </span>
+
           <button
             onClick={onClose}
             aria-label="Close"
             className="text-muted dark:text-dark-muted hover:text-ink dark:hover:text-white p-1 rounded transition"
           >
             <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path
+                d="M6 6l12 12M18 6L6 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>
 
+        {/* ===== BODY ===== */}
         <div className="p-5 sm:p-6">
           {mode === 'edit' ? (
             <TaskForm
@@ -75,11 +99,14 @@ export default function TaskModal({ task, categories = [], onClose, onUpdate, on
               <div className="flex items-start justify-between gap-4">
                 <h2
                   className={`font-display text-xl font-semibold break-words ${
-                    task.completed ? 'line-through text-muted dark:text-dark-muted' : 'text-ink dark:text-white'
+                    task.completed
+                      ? 'line-through text-muted dark:text-dark-muted'
+                      : 'text-ink dark:text-white'
                   }`}
                 >
                   {task.title}
                 </h2>
+
                 <span
                   className={`shrink-0 text-xs font-medium px-2.5 py-1 rounded-full capitalize ${
                     PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium
@@ -97,14 +124,19 @@ export default function TaskModal({ task, categories = [], onClose, onUpdate, on
                     color: task.category.color,
                   }}
                 >
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: task.category.color }} />
+                  <span
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: task.category.color }}
+                  />
                   {task.category.name}
                 </span>
               )}
 
               <div className="flex items-center gap-2 text-sm">
                 <span
-                  className={`h-2 w-2 rounded-full ${task.completed ? 'bg-focus-500' : 'bg-gold'}`}
+                  className={`h-2 w-2 rounded-full ${
+                    task.completed ? 'bg-focus-500' : 'bg-gold'
+                  }`}
                 />
                 <span className="text-muted dark:text-dark-muted">
                   {task.completed ? 'Completed' : 'Pending'}
@@ -120,7 +152,8 @@ export default function TaskModal({ task, categories = [], onClose, onUpdate, on
                   Details
                 </h3>
                 <p className="text-sm text-ink/85 dark:text-white/85 whitespace-pre-wrap break-words">
-                  {task.description || 'No additional details were added for this task.'}
+                  {task.description ||
+                    'No additional details were added for this task.'}
                 </p>
               </div>
 
@@ -137,7 +170,9 @@ export default function TaskModal({ task, categories = [], onClose, onUpdate, on
                       : 'bg-focus-500 text-white hover:bg-focus-600'
                   }`}
                 >
-                  {task.completed ? 'Mark as pending' : 'Mark as completed'}
+                  {task.completed
+                    ? 'Mark as pending'
+                    : 'Mark as completed'}
                 </button>
 
                 <div className="flex items-center gap-2">
